@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_set>
 
+// проверяем последовательность, туз - 8, 6 - 0
 bool CheckSequence(const std::vector<uint8_t>& stack) {
   if (stack.size() != 9) {
     return false;
@@ -51,19 +52,20 @@ struct State {
   void RemoveSequance() {
     std::vector<int8_t> cnt;
     int8_t step = 0;
+    // ищем правильные кучи
     for (auto i : status) {
       if (CheckSequence(i)) {
         cnt.push_back(step);
       }
       ++step;
     }
-
+    // удаляем правильные кучи
     for (auto j : cnt) {
       for(auto i : status[j]) {
         status[j].pop_back();
       }
     }
-
+    // проверим не стало ли состояние пустым
     for (auto i : status) {
       if (!i.empty()) {
         return;
@@ -74,15 +76,15 @@ struct State {
 };
 
 int DFS(State& v, int num) {
-  v.RemoveSequance();
+  v.RemoveSequance(); // проверяем можно ли удалить правильную кучу
   if (v.empty) {
     return num;
   }
   v.used = 1;
-  std::vector<State> neighbours = v.GetNextState();
+  std::vector<State> neighbours = v.GetNextState(); // рассматриваем все возможные состояния из данного
   for (auto u : neighbours) {
     if (!u.used) {
-      DFS(u, num + 1);
+      DFS(u, num + 1); // увеличиваем число шагов
     }
   }
   return -1;
